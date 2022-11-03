@@ -86,6 +86,7 @@ def ingresar():
             if logged_admin.contrasenia:
                 return redirect(url_for('menu_administrador'))
             else:
+                cursor.close()
                 flash("Contraseña no valida")
                 return render_template('ingreso/index.html')
         else:
