@@ -84,7 +84,7 @@ def ingresar():
         logged_admin = ModelAdmin.ingreso(db,admin)
         if logged_admin != None:
             if logged_admin.contrasenia:
-                return redirect(url_for('registrarse'))
+                return redirect(url_for('menu_administrador'))
             else:
                 flash("Contraseña no valida")
                 return render_template('ingreso/index.html')
@@ -98,6 +98,13 @@ def ingresar():
 def registrarse():
     return render_template('ingreso/registro.html')
 
+@app.route('/menu_administrador')
+def menu_administrador():
+    return render_template('administradores/admin_dashboard.html')
+
+@app.route('/tablas')
+def tablas():
+    return render_template('administradores/pages/tables.html')
 
 if __name__=='__main__':
     app.config.from_object(config['development'])
