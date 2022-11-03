@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <title>inicio</title>
+</head>
+<body>
+    <table class="table table-light">
+        <thead class="thead-light">
+            <tr>
+                <th>Nombre Completo</th>
+                <th>Foto</th>
+                <th>Nombre Usuario</th>
+                <th>Correo</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for administrador in administradores %}
+            <tr>
+                <td>{{ administrador[5] }}</td>
+                <td>{{ administrador[4] }}</td>
+                <td>{{ administrador[1] }}</td>
+                <td>{{ administrador[3] }}</td>
+                <td>
+                    <a href="/editar_administrador/{{administrador[0]}}">editar</a>
+                    <a href="/eliminar_administrador/{{administrador[0]}}">Borrar</a>
+                </td>
+            </tr>                
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

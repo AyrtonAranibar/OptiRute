@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ingresar</title>
+    
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap5/css/bootstrap.css')}}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/login_style.css')}}" />
+
+</head>
+<body>
+    <div class="contenedor">
+        <h4>Registrarse</h4>
+        <form action="/guardar_administrador" method="post" enctype="multipart/form-data">
+            <label for="txtNombreCompleto">Nombres</label>
+            <input type="text" id="nombre" name="txtNombreCompleto" placeholder="Marcelo Edmundo Castillo Hualpa" autocomplete="off">
+            <label for="txtFoto">Foto o imagen</label>
+            <input type="file" id="txtFoto" name="txtFoto">
+            <label for="txtCorreo">Correo</label>
+            <input type="text" id="txtCorreo" name="txtCorreo" placeholder="ejemplo@mail.com" autocomplete="off" >
+            <label for="txtNombre">Nombre Usuario *</label>
+            <input type="text" id="txtNombre" name="txtNombre" placeholder="Marcelo123" autocomplete="off" required >
+            <label for="txtContrasenia">Contraseña *</label>
+            <input type="password" id="txtContrasenia" name="txtContrasenia" placeholder="************" autocomplete="off" required >
+            <br>
+            <div class="buttons-content">
+            <input type="submit" value="Registrarse"><a href="{{ url_for('ingresar')}}" class="registrarse-button">Atrás</a>
+            </div>
+        </form>
+    </div>
+</body>
+</html>
+<script>
+    window.addEventListener('load', (event) => {
+
+    });
+</script>

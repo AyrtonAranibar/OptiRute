@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ingresar</title>
+    
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap5/css/bootstrap.css')}}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/login_style.css')}}" />
+
+</head>
+<body>
+    <div class="contenedor">
+        
+<!--
+<div id="alerta" class="alert alert-danger" role="alert">
+            Nombre de usuario o contraseña incorrecto
+            <svg class="bi" width="32" height="32" fill="currentColor">
+            <use xlink:href="<?='http://10.244.52.144/smartway/public/'?>/assets/bootstrap5/bootstrap-icons/bootstrap-icons.svg#x"/>
+            </svg>
+        </div>
+-->
+        
+
+        <h4>Autentificación</h4>
+        <form action="/ingresar" method="post">
+            <label for="username">Ingresa tu nombre de usuario</label>
+            <input type="text" id="username" name="username" placeholder="Usuario123" autocomplete="off">
+            <label for="contrasena">Ingresa contraseña</label>
+            <input type="password" id="contrasena" name="contrasena" placeholder="************" autocomplete="off"><br>
+            <a class="olvide"><p>olvidé mi contraseña</p></a>
+            <div class="buttons-content">
+            <input type="submit" value="Ingresar"><a href="{{ url_for('registrarse')}}" class="registrarse-button">Registrarse</a>
+            </div>
+        </form>
+    </div>
+</body>
+</html>
+<script>
+    alerta=document.getElementById('alerta');
+    alerta.addEventListener('click',function(){
+        alerta.remove();
+    });
+</script>
+<script src="{{ url_for('static', filename='js/jquery.min.js')}}"></script>
+<script src="{{ url_for('static', filename='js/jquery.scrolly.min.js')}}"></script>
+<script src="{{ url_for('static', filename='js/jquery.dropotron.min.js')}}"></script>
+<script src="{{ url_for('static', filename='js/jquery.scrollex.min.js')}}"></script>
+<script src="{{ url_for('static', filename='js/browser.min.js')}}"></script>
+<script src="{{ url_for('static', filename='js/breakpoints.min.js')}}"></script>
+<script src="{{ url_for('static', filename='js/util.js')}}"></script>
+<script src="{{ url_for('static', filename='js/main.js')}}"></script>
+<script src="{{ url_for('static', filename='js/jquery-1.12.4.min.js')}}"></script>
+<script src="{{ url_for('static', filename='bootstrap5/js/bootstrap.js')}}"></script>
