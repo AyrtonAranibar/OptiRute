@@ -14,12 +14,13 @@
     <div class="contenedor">
         <h4>Registrarse</h4>
         <form action="/guardar_administrador" method="post" enctype="multipart/form-data">
-            <label for="txtNombreCompleto">Nombres</label>
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <label for="txtNombreCompleto">Nombres y apellidos</label>
             <input type="text" id="nombre" name="txtNombreCompleto" placeholder="Marcelo Edmundo Castillo Hualpa" autocomplete="off">
             <label for="txtFoto">Foto o imagen</label>
             <input type="file" id="txtFoto" name="txtFoto">
             <label for="txtCorreo">Correo</label>
-            <input type="text" id="txtCorreo" name="txtCorreo" placeholder="ejemplo@mail.com" autocomplete="off" >
+            <input type="email" id="txtCorreo" name="txtCorreo" placeholder="ejemplo@mail.com" autocomplete="off" >
             <label for="txtNombre">Nombre Usuario *</label>
             <input type="text" id="txtNombre" name="txtNombre" placeholder="Marcelo123" autocomplete="off" required >
             <label for="txtContrasenia">Contraseña *</label>
