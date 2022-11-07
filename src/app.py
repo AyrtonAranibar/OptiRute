@@ -131,6 +131,17 @@ def menu_administrador():
 def tablas():
     return render_template('administradores/pages/tables.html')
 
+## ENTREGAS ##
+@app.route('/entregas')
+@login_required
+def entregas():
+    return render_template('administradores/entregas/index.html')
+
+@app.route('/entregas/crear_entrega')
+@login_required
+def crear_entrega():
+    return render_template('administradores/entregas/crear.html')
+
 
 ############################ PROTOCOLOS ######################
 
