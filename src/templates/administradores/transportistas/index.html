@@ -6,7 +6,7 @@
         <li class="breadcrumb-item text-sm"><a class="opacity-5 text-dark" href="javascript:;">Página</a></li>
         <li class="breadcrumb-item text-sm text-dark active" aria-current="page">Administración</li>
       </ol>
-      <h6 class="font-weight-bolder mb-0">Entregas</h6>
+      <h6 class="font-weight-bolder mb-0">transportistas</h6>
     </nav>
     <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4" id="navbar">
       <div class="ms-md-auto pe-md-3 d-flex align-items-center">
@@ -38,14 +38,27 @@
           <div class="card my-4">
             <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
               <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3 d-flex justify-content-between">
-                <h6 class="text-white text-capitalize ps-3 w-25 ">Lista de entregas</h6>
-                <div class="d-flex justify-content-end">
-                  <a  class="btn btn-light me-3" href="/rutas/generar_ruta"><i class="bi bi-plus-lg fa-lg"></i> Generar rutas</a>
-                  <a  class="btn btn-light me-3" href="/rutas/mapa"><i class="bi bi-eye-fill fa-lg"></i> Ver mapa</a>
-                </div>
+                <h6 class="text-white text-capitalize ps-3 w-25 ">Lista de transportistas</h6>
+                <a  class="btn btn-light me-3" href="{{ url_for('crear_transportista')}}"><i class="bi bi-plus-lg fa-lg"></i> Agregar un transportista</a>
               </div>
             </div>
             <div class="card-body px-0 pb-2">
+
+              {% with messages = get_flashed_messages() %}
+
+              {% if messages %}
+              <br>
+              {% for message in messages %}
+              <div class="alert alert-light alert-dismissible" role="alert">
+              <strong>{{ message }}</strong>    
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"><i class="bi bi bi-x-lg fa-lg" style="color:black"></i></button>
+
+              </div>
+              {% endfor%}
+              {% endif%}
+
+              {% endwith %}
+              
               <div class="table-responsive p-0">
 
                 
@@ -55,38 +68,42 @@
                     <tr>
                       <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">ID</th>
                       <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Nombre</th>
-                      <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Longitud</th>
-                      <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Latitud</th>
-                      <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Peso</th>
-                      <!-- <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Accion</th> -->
+                      <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Usuario</th>
+                      <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Número</th>
+                      <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Correo</th>
+                      <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Imagen</th>
+                      <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Accion</th>
 
                     </tr>
                   </thead>
 
                   <tbody>
-                    {% for entrega in entregas %}
+                    {% for transportista in transportistas %}
                     <tr>
                       <td>
                         <div class="d-flex justify-content-center">
-                          <h6 class="mb-0 text-sm"> {{ entrega[0] }} </h6>
+                          <h6 class="mb-0 text-sm"> {{ transportista[0] }} </h6>
                         </div>
                       </td>
-                      <td>
-                        <p class="text-xs font-weight-bold mb-0">{{ entrega[4] }} </p>
-                      </td>
-                      <td class="align-middle text-center text-sm">
-                        <p class="text-xs font-weight-bold mb-0">{{ entrega[2] }} </p>
+                      <td class="align-middle text-center">
+                        <p class="text-xs font-weight-bold mb-0">{{ transportista[1] }} </p>
                       </td>
                       <td class="align-middle text-center">
-                        <p class="text-xs font-weight-bold mb-0">{{ entrega[3] }} </p>
+                        <p class="text-xs font-weight-bold mb-0">{{ transportista[2] }} </p>
                       </td>
                       <td class="align-middle text-center">
-                        <p class="text-xs font-weight-bold mb-0">{{ entrega[1] }} </p>
+                        <p class="text-xs font-weight-bold mb-0">{{ transportista[3] }} </p>
                       </td>
-                      <!-- <td class="align-middle">
-                        <a href="">editar</a>
-                        <a href="">Borrar</a>
-                      </td> -->
+                      <td class="align-middle text-center">
+                        <p class="text-xs font-weight-bold mb-0">{{ transportista[4] }} </p>
+                      </td>
+                      <td class="align-middle text-center">
+                        <img class="img-thumbnail" width="100" src="uploads/{{transportista[5]}}" alt="foto">
+                      </td>
+                      <td class="d-flex justify-content-center">
+                        <a href="/transportistas/editar_transportista/{{ transportista[0] }}" class="btn btn-info">editar</a> &nbsp;
+                        <a href="/transportistas/eliminar_transportista/{{ transportista[0] }}" class="btn btn-danger">Borrar</a>
+                      </td>
                     </tr>
                     {% endfor %}
                   </tbody>

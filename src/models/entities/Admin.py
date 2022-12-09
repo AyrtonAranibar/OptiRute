@@ -17,5 +17,3 @@ class Admin(UserMixin):
     @classmethod
     def check_password(self, hashed_password, contrasenia):
         return check_password_hash(hashed_password, contrasenia)
-    
-# print(generate_password_hash("contrasenia_complicada"))

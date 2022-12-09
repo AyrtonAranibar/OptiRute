@@ -43,6 +43,22 @@
               </div>
             </div>
             <div class="card-body px-0 pb-2">
+
+              {% with messages = get_flashed_messages() %}
+
+              {% if messages %}
+              <br>
+              {% for message in messages %}
+              <div class="alert alert-light alert-dismissible" role="alert">
+              <strong>{{ message }}</strong>    
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"><i class="bi bi bi-x-lg fa-lg" style="color:black"></i></button>
+
+              </div>
+              {% endfor%}
+              {% endif%}
+
+              {% endwith %}
+              
               <div class="table-responsive p-0">
 
                 
@@ -82,7 +98,7 @@
                       </td>
                       <td class="align-middle">
                         <a href="">editar</a>
-                        <a href="">Borrar</a>
+                        <a href="/entregas/eliminar_entrega/{{ entrega[0] }}">Borrar</a>
                       </td>
                     </tr>
                     {% endfor %}
