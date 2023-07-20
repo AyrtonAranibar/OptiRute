@@ -15,7 +15,7 @@ import folium
 
 #test
 # import pytest
-
+import random
 import numpy as np #numpy de toda la vida
 ### Libreria de optimizacion ###
 import hygese as hgs
@@ -456,6 +456,9 @@ def rutas():
         icon=folium.Icon(color="green"),
     ).add_to(m)
 
+
+    print("Entró a rutas")  
+
     m.save('src/templates/map.html')
 
     return render_template('administradores/rutas/index.html', entregas=entregas)
@@ -473,18 +476,24 @@ def generar_ruta():
 
     m = folium.Map(location=[-16.41041958501,-71.5279236901],zoom_start=13, control_scale=True,tiles="cartodbpositron")#crear el mapa
 
+
     # Lista de entregas
     coordenadas =[]
+    colorsLenght = 9
+    counter = 0
     for entrega in entregas:
-        coordenadas.append([float(entrega[2]),float(entrega[3]) ])
-        array_pedidos.append(entrega[1])
+        if(counter < 10):
+            coordenadas.append([float(entrega[2]),float(entrega[3]) ])
+            array_pedidos.append(entrega[1])
 
-        coordenada = (entrega[3],entrega[2])
-        folium.Marker(
-            location=list(coordenada),
-            popup= entrega[4],
-            icon=folium.Icon(color="red"),
-        ).add_to(m)
+            coordenada = (entrega[3],entrega[2])
+            color = getcolor(random.randint(1, colorsLenght))
+            folium.Marker(
+                location=list(coordenada),
+                popup= entrega[4],
+                icon=folium.Icon(color = 'blue'),
+            ).add_to(m)
+        counter=counter+1
 
     almacen = (-16.41041958501,-71.5279236901)
     folium.Marker(
@@ -500,7 +509,6 @@ def generar_ruta():
     locations=coordenadas,
     profile='driving-car',
     metrics=['distance'],
-    # units=['meters'],
     validate=False,
     )   
 
@@ -511,22 +519,19 @@ def generar_ruta():
     #### Algoritmos geneticos ####
     data = dict()
     data['distance_matrix'] = matriz_distancia_redondeada
-    data['num_vehicles'] = 4
+    data['num_vehicles'] = 1
     data['depot'] = 0
     data['demands'] = array_pedidos
-    data['vehicle_capacity'] = 1400  
+    data['vehicle_capacity'] = 3000  
     data['service_times'] = np.zeros(len(data['demands']))
 
-    
-    ap = hgs.AlgorithmParameters(timeLimit=3)  # seconds
+    ap = hgs.AlgorithmParameters(timeLimit=10)  # seconds
     hgs_solver = hgs.Solver(parameters=ap, verbose=True)
 
-    
     result = hgs_solver.solve_cvrp(data)
     print("solucion:")
     print(result.cost)
     print(result.routes)
-
 
     ########### MOSTRAR LA SOLUCION POR EL MAPA #############
     solucion = result.routes
@@ -541,74 +546,56 @@ def generar_ruta():
         fila_ruta.append([entregas[0][2] ,entregas[0][3]])
         array_rutas.append(fila_ruta.copy())
 
-    # print(array_rutas)
 
-    ##COLORS##
-    style1 = {'fillColor': '#d4271e', 'color': '#d4271e'}
-    style2 = {'fillColor': '#d47c1e', 'color': '#d47c1e'}
-    colores = [
-        {'fillColor': '#d4271e', 'color': '#d4271e'},
-        {'fillColor': '#d47c1e', 'color': '#d47c1e'},
-        {'fillColor': '#d4cb1e', 'color': '#d4cb1e'},
-        {'fillColor': '#97d41e', 'color': '#97d41e'},
-        {'fillColor': '#64d41e', 'color': '#64d41e'},
-        {'fillColor': '#30d41e', 'color': '#30d41e'},
-        {'fillColor': '#1ed442', 'color': '#1ed442'},
-        {'fillColor': '#1ed47f', 'color': '#1ed47f'},
-        {'fillColor': '#1ed4c2', 'color': '#1ed4c2'},
-        {'fillColor': '#1e91d4', 'color': '#1e91d4'},
-        {'fillColor': '#1e61d4', 'color': '#1e61d4'},
-        {'fillColor': '#1e24d4', 'color': '#1e24d4'},
-        {'fillColor': '#451ed4', 'color': '#451ed4'},
-        {'fillColor': '#7c1ed4', 'color': '#7c1ed4'},
-        {'fillColor': '#a71ed4', 'color': '#a71ed4'},
-        {'fillColor': '#d41e5b', 'color': '#d41e5b'},
-    ]
-
-    
-    roads_highlight_function = lambda x: {
-    'color' :   'black',
-    'opacity' : 0.90,
-    # specifying properties from GeoJSON
-    'weight' : 5
-    }
-
-    color_index = 0
-
-    if (array_rutas != 0):
-        for ruta in array_rutas:
+    if array_rutas:
+        for ruta_index, ruta in enumerate(array_rutas, start=1):
             i = 0
-            color_index = color_index + 1
-            
             for coordenadas in ruta:
                 if (i >= 1):
-                    style_function = lambda x: {
-                    'color' : 'red',
-                    'opacity' : 0.50,
-                    }
                     coords = (( float(ruta[i-1][0]), float(ruta[i-1][1])),( float(ruta[i][0]), float(ruta[i][1])))
                     res = client.directions(coords)
                     geometry = client.directions(coords)['routes'][0]['geometry']
                     decoded = convert.decode_polyline(geometry)
-
+                    randomColor = getcolor(ruta_index)
                     distance_txt = "<h4> <b>Distance :&nbsp" + "<strong>"+str(round(res['routes'][0]['summary']['distance']/1000,1))+" Km </strong>" +"</h4></b>"
                     duration_txt = "<h4> <b>Duration :&nbsp" + "<strong>"+str(round(res['routes'][0]['summary']['duration']/60,1))+" Mins. </strong>" +"</h4></b>"
-                    color = getcolor(color_index)
-                    folium.GeoJson(decoded, style_function = lambda color_index: {
-                    'fillColor': getcolor(color_index),
-                    'color': color,
-                    'weight': 2,
-                    'fillOpacity': 0.8}, highlight_function = roads_highlight_function).add_child(folium.Popup(distance_txt+duration_txt,max_width=300)).add_to(m)
+                    style_function = lambda x: {
+                        'fillColor': 'black',
+                        'color': 'black',
+                        'stroke': True,
+                        'weight': 2,
+                        'fillOpacity': 0.8
+                    }
+                    folium.GeoJson(decoded, style_function = style_function).add_child(folium.Popup(distance_txt + duration_txt, max_width=300)).add_to(m)
                     
-                    # print(ruta[i-1]+ruta[i])
-                    # print(coordenadas[0],coordenadas[1])
                 i = i + 1
+        
 
     m.save('src/templates/map.html')
 
 
     return render_template('administradores/rutas/index.html', entregas=entregas)
 
+def get_color(color_index):
+    colores = [
+    {'fillColor': '#d4271e', 'color': '#d4271e'},
+    {'fillColor': '#d47c1e', 'color': '#d47c1e'},
+    {'fillColor': '#d4cb1e', 'color': '#d4cb1e'},
+    {'fillColor': '#97d41e', 'color': '#97d41e'},
+    {'fillColor': '#64d41e', 'color': '#64d41e'},
+    {'fillColor': '#30d41e', 'color': '#30d41e'},
+    {'fillColor': '#1ed442', 'color': '#1ed442'},
+    {'fillColor': '#1ed47f', 'color': '#1ed47f'},
+    {'fillColor': '#1ed4c2', 'color': '#1ed4c2'},
+    {'fillColor': '#1e91d4', 'color': '#1e91d4'},
+    {'fillColor': '#1e61d4', 'color': '#1e61d4'},
+    {'fillColor': '#1e24d4', 'color': '#1e24d4'},
+    {'fillColor': '#451ed4', 'color': '#451ed4'},
+    {'fillColor': '#7c1ed4', 'color': '#7c1ed4'},
+    {'fillColor': '#a71ed4', 'color': '#a71ed4'},
+    {'fillColor': '#d41e5b', 'color': '#d41e5b'},
+    ]
+    return colores[color_index % len(colores)]
 
 @app.route('/rutas/mapa')
 @login_required
@@ -638,8 +625,6 @@ def getcolor(index):
         return 'lime'
     if index == 9:
         return 'black'
-    if index == 10:
-        return 'green'
     else:
         return 'gray'
 
