@@ -2,14 +2,14 @@
 
 ¡Hola! 
 
-OptiRute es un CRUD optimizador de rutas utilizando algoritmos geneticos, para el desarrollo de este proyecto academico se utilizó:
+OptiRute es un CRUD optimizador de rutas utilizando algoritmos genéticos, para el desarrollo de este proyecto académico se utilizó:
 
 - MySQL
-- PyHygese ( Solucionador para el problema de enrutamiento de vehículos capacitados )
+- PyHygese (Solucionador para el problema de enrutamiento de vehículos capacitados )
 - MapBox
 - Folium 
 
-## Imagenes del proyecto
+## Imágenes del proyecto
 ![Añadir una entregas](https://github.com/AyrtonAranibar/OptiRute/blob/master/src/project/entregas_v2.PNG)
 ![Ruta optimizada](https://github.com/AyrtonAranibar/OptiRute/blob/master/src/project/rutas_v2.PNG)
 
