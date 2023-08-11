@@ -72,8 +72,8 @@ class ModelTransportista():
     def editar_transportista(self, db, transportista):
         try:
             conn = db.connection
-            sql = """UPDATE `transportista` SET `nombre` = '{}',`numero` = '{}',`correo` = '{}',`imagen` = '{}'
-            WHERE `transportista`.`id` = '{}'""".format( transportista.nombre, transportista.numero, transportista.correo, transportista.imagen, transportista.id)
+            sql = """UPDATE `transportista` SET `nombre` = '{}',`usuario` = '{}',`numero` = '{}',`correo` = '{}',`imagen` = '{}'
+            WHERE `transportista`.`id` = '{}'""".format( transportista.nombre,transportista.usuario, transportista.numero, transportista.correo, transportista.imagen, transportista.id)
             cursor = conn.cursor()
             cursor.execute(sql)
             conn.commit()
