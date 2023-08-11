@@ -459,7 +459,7 @@ def rutas():
 
     print("Entró a rutas")  
 
-    m.save('src/templates/map.html')
+    m.save('map.html')
 
     return render_template('administradores/rutas/index.html', entregas=entregas)
 
@@ -571,7 +571,7 @@ def generar_ruta():
                 i = i + 1
         
 
-    m.save('src/templates/map.html')
+    m.save('map.html')
 
 
     return render_template('administradores/rutas/index.html', entregas=entregas)
