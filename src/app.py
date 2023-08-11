@@ -55,7 +55,7 @@ array_pedidos = []
 CARPETA = os.path.join('uploads')
 app.config['CARPETA'] = CARPETA
 
-@app.route('/uploads/<nombreFoto>')
+@app.route('/src/static/img/uploads/<nombreFoto>')
 @login_required
 def uploads(nombreFoto):
     return send_from_directory(app.config['CARPETA'], nombreFoto)
@@ -101,7 +101,7 @@ def guardarAdmin():
     nuevoNombreFoto = ''
     if _foto.filename!='':
         nuevoNombreFoto = tiempo + _foto.filename
-        _foto.save("uploads/" + nuevoNombreFoto)
+        _foto.save("/src/static/img/uploads/" + nuevoNombreFoto)
 
     admin = Admin(0,_nombre, _contrasenia, _correo, nuevoNombreFoto, _nombrecompleto)
     ModelAdmin.crear_usuario(db, admin)
@@ -300,7 +300,7 @@ def crear_transportista():
         nuevoNombreFoto = ''
         if imagen.filename!='':
             nuevoNombreFoto = tiempo + imagen.filename
-            imagen.save("uploads/" + nuevoNombreFoto)
+            imagen.save("/src/static/img/uploads/" + nuevoNombreFoto)
         transportista = Transportista(0, nombre, usuario, contrasenia, numero, correo, nuevoNombreFoto, 1)
         ModelTransportista.crear_transportista(db, transportista)
 
@@ -344,7 +344,7 @@ def guardar_transportista():
     nuevoNombreFoto = ''
     if imagen.filename!='':
         nuevoNombreFoto = tiempo + imagen.filename
-        imagen.save("uploads/" + nuevoNombreFoto)
+        imagen.save("/src/static/img/uploads/" + nuevoNombreFoto)
     transportista = Transportista(0, nombre, usuario, None, numero, correo, nuevoNombreFoto, 1)
     ModelTransportista.crear_transportista(db, transportista)
     transportista = ModelTransportista.editar_transportista(db,transportista)
@@ -358,6 +358,7 @@ def guardar_transportista():
 @login_required
 def vehiculos():
     vehiculos = ModelVehiculo.get_vehiculos_activos(db)
+    # flash(vehiculos)
     return render_template('administradores/vehiculos/index.html', vehiculos=vehiculos)
 
 
@@ -376,7 +377,7 @@ def crear_vehiculo():
         nuevoNombreFoto = ''
         if imagen.filename!='':
             nuevoNombreFoto = tiempo + imagen.filename
-            imagen.save("uploads/" + nuevoNombreFoto)
+            imagen.save("/src/static/img/uploads/" + nuevoNombreFoto)
         vehiculo = Vehiculo(0, estado, placa, 1, nuevoNombreFoto)
         ModelVehiculo.crear_vehiculo(db, vehiculo)
 
@@ -415,7 +416,7 @@ def guardar_vehiculo():
     nuevoNombreFoto = ''
     if imagen.filename!='':
         nuevoNombreFoto = tiempo + imagen.filename
-        imagen.save("uploads/" + nuevoNombreFoto)
+        imagen.save("/src/static/img/uploads/" + nuevoNombreFoto)
     vehiculo = Vehiculo(0, estado, placa, 1, nuevoNombreFoto)
     ModelVehiculo.crear_vehiculo(db, vehiculo)
 
