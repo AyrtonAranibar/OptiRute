@@ -26,6 +26,7 @@ from models.ModelEntrega import ModelEntrega
 from models.ModelCliente import ModelCliente
 from models.ModelTransportista import ModelTransportista
 from models.ModelVehiculo import ModelVehiculo
+from models.ModelSede import ModelSede
 
 import json 
 import os
@@ -33,6 +34,7 @@ import os
 #Entidades:
 from models.entities.Admin import Admin
 from models.entities.Entrega import Entrega
+from models.entities.Sede import Sede
 from models.entities.Cliente import Cliente
 from models.entities.Transportista import Transportista
 from models.entities.Vehiculo import Vehiculo
@@ -230,8 +232,35 @@ def guardar_cliente():
     return render_template('administradores/clientes/index.html', clientes=clientes)
 
 
+################ SEDE ################
+@app.route('/sede')
+@login_required
+def sede():
+    sede = ModelSede.get_sede(db)
+    return render_template('administradores/sede/index.html', sede=sede)
+
+@app.route('/sede/editar_sede', methods=['GET','POST'])
+@login_required
+def editar_sede():
+    if request.method == 'POST':
+        nombre = request.form['nombre']
+        direccion = request.form['direccion']
+        coordenadas = request.form['coordenada']
+        coordenadas = json.loads(coordenadas)
+        longitud = coordenadas['lng']
+        latitud = coordenadas['lat']
+        sede = Sede(1, nombre, direccion, longitud, latitud)
+        sede = ModelSede.editar_sede(db,sede)
+        sede = ModelSede.get_sede(db)
+        return render_template('administradores/sede/index.html', sede=sede)
+    else:
+        sede_central = ModelSede.get_sede(db)
+        return render_template('administradores/sede/editar.html', sede_central=sede_central)
+    
 
 
+
+    
 ################ ENTREGAS ################
 @app.route('/entregas')
 @login_required
