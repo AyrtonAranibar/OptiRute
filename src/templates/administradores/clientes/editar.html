@@ -61,7 +61,8 @@
                     <input type="text" name="nombre" id="nombre" step="1" value="{{ cliente[1] }} ">
 
                     <label for="coordenada" class=" mt-3"> Cordenada </label>
-                    <input type="text" name="coordenada" id="coordenada" step="2"  value='{"lng":{{cliente[2]}},"lat":{{cliente[3]}}}'>
+                    <input type="text" name="coordenada" id="coordenada" step="2"  value='{"lng":{{cliente[2]}},"lat":{{cliente[3]}}}' hidden>
+                    <input type="text" name="coordenadas-mostradas" id="cordenadas-mostradas" value="[{{ cliente[2] }},{{ cliente[3] }}]" disabled> 
 
                     <label for="direccion" class=" mt-3"> Direccion </label>
                     <input type="text" name="direccion" id="direccion" step="3"  value="{{ cliente[4] }} ">

@@ -161,11 +161,21 @@
 
                   <!-- De Mapbox -->
                   <script>
+                    var coordenada = document.getElementById('coordenada');
+                    var coordenadas = JSON.parse(coordenada.value);
+                    if (coordenadas){
+                      var longitud = coordenadas.lng;
+                      var latitud = coordenadas.lat;
+                    }else{
+                      var longitud = -71.538;
+                      var latitud = -16.393;
+                    }
+                    
                     mapboxgl.accessToken = 'pk.eyJ1Ijoid29sZmdhbmcxIiwiYSI6ImNsYTY2OG80bzFjcXEzb21uNGk5Z25zNW4ifQ.Psv8h5qGk6ipigikuH0IgA';
                     var map = new mapboxgl.Map({
                       container: 'map',
                       style: 'mapbox://styles/mapbox/streets-v12',
-                      center: [-71.538, -16.393],  
+                      center: [longitud, latitud],  
                       zoom: 13
                     });
                   
@@ -189,7 +199,7 @@
                     });
                   
                     map.on('click', function (e) {
-                      document.getElementById('coordenada').value =
+                      coordenada.value =
                         JSON.stringify(e.lngLat);
                       const lat = e.lngLat.lat.toString().slice( 0, 9);
                       const lng = e.lngLat.lng.toString().slice( 0, 9);
@@ -199,9 +209,10 @@
                     });
                   
                     const marker = new mapboxgl.Marker({
+                      
                       draggable: true
                     })
-                      .setLngLat([-71.538, -16.393])
+                      .setLngLat([longitud, latitud])
                       .addTo(map);
                   
                     function onDragEnd() {
@@ -209,7 +220,7 @@
                       const lat = lngLat.lat.toString().slice( 0, 9);
                       const lng = lngLat.lng.toString().slice( 0, 9);
                       document.getElementById('cordenadas-mostradas').value = `[${lng} , ${lat}]`;
-                      document.getElementById('coordenada').value = JSON.stringify(lngLat); // Agrega "JSON.stringify" para obtener el formato correcto de las coordenadas
+                      coordenada.value = JSON.stringify(lngLat); // Agrega "JSON.stringify" para obtener el formato correcto de las coordenadas
                     }
                   
                     marker.on('dragend', onDragEnd);
