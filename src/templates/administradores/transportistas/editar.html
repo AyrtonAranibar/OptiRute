@@ -49,28 +49,28 @@
 
                 <div class="card my-4" style='width: 50%;height: 600px;'>
                   
-                  <form action="/transportistas/guardar_transportista/" method="POST" enctype="multipart/form-data" class="d-flex flex-column"  style='width: 60%; margin-left:auto; margin-right:auto'  >
+                  <form action="/transportistas/editar_transportista/{{transportista[0]}}" method="POST" enctype="multipart/form-data" class="d-flex flex-column"  style='width: 60%; margin-left:auto; margin-right:auto'  >
 
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                     <p>Para añadir la coordenada, haga clic en el mapa</p>
 
 
-                    <input type="text" name="id" id="id" value="{{ transportista[0] }} " hidden>
+                    <input type="text" name="id" id="id" value="{{ transportista[0] }}" hidden>
 
                     <label for="nombre"> Nombre </label>
-                    <input type="text" name="nombre" id="nombre" step="1" value="{{ transportista[1] }} ">
+                    <input type="text" name="nombre" id="nombre" step="1" value="{{ transportista[1] }}">
 
                     <label for="usuario" class=" mt-3"> Usuario </label>
                     <input type="text" name="usuario" id="usuario" step="2"  value='{{transportista[2]}}'>
 
                     <label for="numero" class=" mt-3"> Número </label>
-                    <input type="text" name="numero" id="numero" step="3"  value="{{ transportista[3] }} ">
+                    <input type="text" name="numero" id="numero" step="3"  value="{{ transportista[3] }}">
 
                     <label for="correo" class=" mt-3"> Correo </label>
-                    <input type="text" name="correo" id="correo" step="4"  value="{{ transportista[4] }} ">
+                    <input type="text" name="correo" id="correo" step="4"  value="{{ transportista[4] }}">
 
                     <label for="imagen" class=" mt-3"> Imagen </label>
-                    <input type="file" name="imagen" id="imagen" step="6"  value="{{ transportista[5] }} ">
+                    <input type="file" name="imagen" id="imagen" step="6"  value="{{ transportista[5] }}">
 
                     {% if  transportista[5] %}
                       <img class="img-thumbnail" width="100" src="{{ url_for('uploads', nombreFoto=transportista[5]) }}" alt="foto">

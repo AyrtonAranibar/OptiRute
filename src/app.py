@@ -353,11 +353,29 @@ def eliminar_transportista(id):
     return render_template('administradores/transportistas/index.html', transportistas=transportistas)
 
 
-@app.route('/transportistas/editar_transportista/<int:id>', methods=['GET'])
+@app.route('/transportistas/editar_transportista/<int:id>', methods=['GET','POST'])
 @login_required
 def editar_transportista(id):
-    transportista = ModelTransportista.get_transportista_id(db, id)
-    return render_template('administradores/transportistas/editar.html', transportista=transportista)
+    if (request.method == "POST"):
+        nombre = request.form['nombre']
+        usuario = request.form['usuario']
+        numero = request.form['numero']
+        correo = request.form['correo']
+        imagen = request.files['imagen']
+        now = datetime.now()
+        tiempo = now.strftime("%Y%H%M%S")
+        if imagen.filename!='':
+            nuevoNombreFoto = tiempo + imagen.filename
+            imagen.save("static/img/uploads/" + nuevoNombreFoto)
+        else:
+            transportista = ModelTransportista.get_transportista_id(db, id)
+            nuevoNombreFoto = transportista[5]
+        nuevo_transportista = Transportista(id, nombre, usuario,None, numero, correo, nuevoNombreFoto, None)
+        ModelTransportista.editar_transportista(db, nuevo_transportista)
+        return transportistas()
+    else:
+        transportista = ModelTransportista.get_transportista_id(db, id)
+        return render_template('administradores/transportistas/editar.html', transportista=transportista)
 
 @app.route('/transportistas/guardar_transportista/', methods=['POST'])
 @login_required
@@ -428,11 +446,28 @@ def eliminar_vehiculo(id):
     return render_template('administradores/vehiculos/index.html', vehiculos=vehiculos)
 
 
-@app.route('/vehiculos/editar_vehiculo/<int:id>', methods=['GET'])
+@app.route('/vehiculos/editar_vehiculo/<int:id>', methods=['GET','POST'])
 @login_required
 def editar_vehiculo(id):
-    vehiculo = ModelVehiculo.get_vehiculo_id(db, id)
-    return render_template('administradores/vehiculos/editar.html', vehiculo=vehiculo)
+    if request.method == 'POST':
+        vehiculo = ModelVehiculo.get_vehiculo_id(db, id)
+
+        estado = request.form['estado']
+        placa = request.form['placa']
+        imagen = request.files['imagen']
+        if (imagen.filename == ""):
+            nuevoNombreFoto = vehiculo[3];
+        else:
+            now = datetime.now()
+            tiempo = now.strftime("%Y%H%M%S")
+            nuevoNombreFoto = tiempo + imagen.filename
+            imagen.save("static/img/uploads/" + nuevoNombreFoto)
+        nuevo_vehiculo = Vehiculo(id, estado, placa, None, nuevoNombreFoto)
+        vehiculo_actualizar = ModelVehiculo.editar_vehiculo(db,nuevo_vehiculo)
+        return vehiculos();
+    else:
+        vehiculo = ModelVehiculo.get_vehiculo_id(db, id)
+        return render_template('administradores/vehiculos/editar.html', vehiculo=vehiculo)
 
 @app.route('/vehiculos/guardar_vehiculo/', methods=['POST'])
 @login_required
@@ -449,7 +484,7 @@ def guardar_vehiculo():
     vehiculo = Vehiculo(0, estado, placa, 1, "foto2")
     ModelVehiculo.crear_vehiculo(db, vehiculo)
 
-    vehiculo = vehiculo(id, estado, placa, nuevoNombreFoto)
+    vehiculo = Vehiculo(id, estado, placa, nuevoNombreFoto)
     vehiculo = ModelVehiculo.editar_vehiculo(db,vehiculo)
     vehiculos = ModelVehiculo.get_vehiculos_activos(db)
     return render_template('administradores/vehiculos/index.html', vehiculos=vehiculos)
