@@ -24,6 +24,7 @@ import hygese as hgs
 from models.ModelAdmin import ModelAdmin
 from models.ModelEntrega import ModelEntrega
 from models.ModelCliente import ModelCliente
+from models.ModelProducto import ModelProducto
 from models.ModelTransportista import ModelTransportista
 from models.ModelVehiculo import ModelVehiculo
 from models.ModelSede import ModelSede
@@ -36,6 +37,7 @@ from models.entities.Admin import Admin
 from models.entities.Entrega import Entrega
 from models.entities.Sede import Sede
 from models.entities.Cliente import Cliente
+from models.entities.Producto import Producto
 from models.entities.Transportista import Transportista
 from models.entities.Vehiculo import Vehiculo
 
@@ -301,6 +303,61 @@ def eliminar_entrega(id):
     flash("Entrega eliminada con éxito")
     entregas = ModelEntrega.get_entregas_activas(db)
     return render_template('administradores/entregas/index.html', entregas=entregas)
+
+
+################ PRODUCTOS ################
+
+@app.route('/productos')
+@login_required
+def productos():
+    productos = ModelProducto.get_productos_activos(db)
+    return render_template('administradores/productos/index.html', productos=productos)
+
+
+
+@app.route('/productos/crear_producto', methods=['GET', 'POST'])
+@login_required
+def crear_producto():
+    if request.method == 'POST':
+        # (`id`, `nombre`, `usuario`, `contrasenia`, `numero`, `correo`, `imagen`, `activo`) 
+        nombre = request.form['nombre']
+        peso = request.form['peso']
+        descripcion = request.form['descripcion']
+        precio = request.form['precio']
+        producto = Producto( None, nombre, peso, descripcion, precio, 1)
+        ModelProducto.crear_producto(db, producto)
+
+        if (producto != None):
+            flash("Producto "+nombre+" creado con éxito")
+        else:
+            flash("Ha ocurrido un error!")
+        return render_template('administradores/productos/crear.html')
+    else:
+        return render_template('administradores/productos/crear.html')
+
+
+@app.route('/productos/eliminar_producto/<int:id>', methods=['GET'])
+@login_required
+def eliminar_producto(id):
+    producto_eliminado = ModelProducto.eliminar_producto(db, id)
+    flash("producto eliminado con éxito")
+    return productos()
+
+
+@app.route('/productos/editar_producto/<int:id>', methods=['GET','POST'])
+@login_required
+def editar_producto(id):
+    if (request.method == "POST"):
+        nombre = request.form['nombre']
+        peso = request.form['peso']
+        descripcion = request.form['descripcion']
+        precio = request.form['precio']
+        nuevo_producto = Producto( id, nombre, peso, descripcion, precio, None)
+        ModelProducto.editar_producto(db, nuevo_producto)
+        return productos()
+    else:
+        producto = ModelProducto.get_producto_id(db, id)
+        return render_template('administradores/productos/editar.html', producto=producto)
 
 ################ TRANSPORTISTAS ################
 
