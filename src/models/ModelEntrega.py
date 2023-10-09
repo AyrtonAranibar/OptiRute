@@ -1,13 +1,13 @@
-from .entities.Entrega import Entrega
+from .entities.Entregas import Entregas
 
 class ModelEntrega():
 
     @classmethod
-    def crear_entrega(self, db, entrega):
+    def crear_entrega(self, db, entregas):
         try:
             conn = db.connection
-            sql = """INSERT INTO `entrega` (`id`, `peso`, `longitud`, `latitud`, `nombre_receptor`) 
-                    VALUES (0,'{}','{}','{}','{}');""".format( entrega.peso, entrega.longitud, entrega.latitud, entrega.nombre_receptor)
+            sql = """INSERT INTO `entregas` (`id`, `cliente_id`, `producto_id`, `cantidad`, `fecha`, `fecha_entrega`, `estado`) 
+                    VALUES (0,'{}','{}','{}','{}','{}','{}');""".format( entregas.cliente_id ,entregas.producto_id, entregas.cantidad, entregas.fecha, entregas.fecha_entrega, entregas.estado)
             cursor = conn.cursor()
             cursor.execute(sql)
             conn.commit()
@@ -18,7 +18,18 @@ class ModelEntrega():
     def get_entregas(self, db):
         try:
             conn = db.connection
-            sql = "SELECT id, peso, longitud, latitud, nombre_receptor, fecha_creacion, activo FROM entrega"
+            sql = """SELECT 
+                    entregas.id,
+                    cliente.nombre AS nombre_cliente,
+                    productos.nombre AS nombre_producto,
+                    entregas.cantidad,
+                    entregas.fecha,
+                    entregas.fecha_entrega,
+                    entregas.estado,
+                    entregas.activo
+                    FROM entregas
+                    INNER JOIN cliente ON entregas.cliente_id = cliente.id
+                    INNER JOIN productos ON entregas.producto_id = productos.id;"""
             cursor = conn.cursor()
             cursor.execute(sql)
             conn.commit()
@@ -31,7 +42,18 @@ class ModelEntrega():
     def get_entregas_activas(self, db):
         try:
             conn = db.connection
-            sql = "SELECT id, peso, longitud, latitud, nombre_receptor, fecha_creacion, activo FROM entrega WHERE activo = 1"
+            sql = """SELECT 
+                    entregas.id,
+                    cliente.nombre AS nombre_cliente,
+                    productos.nombre AS nombre_producto,
+                    entregas.cantidad,
+                    entregas.fecha,
+                    entregas.fecha_entrega,
+                    entregas.estado,
+                    entregas.activo
+                    FROM entregas
+                    INNER JOIN cliente ON entregas.cliente_id = cliente.id
+                    INNER JOIN productos ON entregas.producto_id = productos.id WHERE entregas.activo = 1"""
             cursor = conn.cursor()
             cursor.execute(sql)
             conn.commit()
@@ -42,14 +64,14 @@ class ModelEntrega():
     
     
     @classmethod
-    def eliminar_entrega(self, db, id):
+    def eliminar_entregas(self, db, id):
         try:
             conn = db.connection
-            sql = "UPDATE `entrega` SET `activo` = '0' WHERE `entrega`.`id` = '{}'".format(id)
+            sql = "UPDATE `entregas` SET `activo` = '0' WHERE `entregas`.`id` = '{}'".format(id)
             cursor = conn.cursor()
             cursor.execute(sql)
             conn.commit()
-            entrega = cursor.fetchone()
-            return entrega
+            entregas = cursor.fetchone()
+            return entregas
         except Exception as ex:
             raise Exception(ex)

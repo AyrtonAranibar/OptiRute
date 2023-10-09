@@ -67,11 +67,13 @@
                   <thead>
                     <tr>
                       <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">ID</th>
-                      <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Nombre</th>
-                      <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Longitud</th>
-                      <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Latitud</th>
-                      <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Peso</th>
-                      <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Accion</th>
+                      <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Cliente</th>
+                      <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Producto</th>
+                      <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Cantidad</th>
+                      <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Fecha</th>
+                      <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Fecha Entrega</th>
+                      <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Estado</th>
+                      <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Acción</th>
 
                     </tr>
                   </thead>
@@ -84,8 +86,8 @@
                           <h6 class="mb-0 text-sm"> {{ entrega[0] }} </h6>
                         </div>
                       </td>
-                      <td>
-                        <p class="text-xs font-weight-bold mb-0">{{ entrega[4] }} </p>
+                      <td class="align-middle text-center text-sm">
+                        <p class="text-xs font-weight-bold mb-0">{{ entrega[1] }} </p>
                       </td>
                       <td class="align-middle text-center text-sm">
                         <p class="text-xs font-weight-bold mb-0">{{ entrega[2] }} </p>
@@ -94,7 +96,13 @@
                         <p class="text-xs font-weight-bold mb-0">{{ entrega[3] }} </p>
                       </td>
                       <td class="align-middle text-center">
-                        <p class="text-xs font-weight-bold mb-0">{{ entrega[1] }} </p>
+                        <p class="text-xs font-weight-bold mb-0">{{ entrega[4] }} </p>
+                      </td>
+                      <td class="align-middle text-center">
+                        <p class="text-xs font-weight-bold mb-0">{{ entrega[5] }} </p>
+                      </td>
+                      <td class="align-middle text-center">
+                        <p class="text-xs font-weight-bold mb-0">{{ entrega[6] }} </p>
                       </td>
                       <td class="align-middle">
                         <a href="">editar</a>

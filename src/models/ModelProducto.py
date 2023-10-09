@@ -39,7 +39,19 @@ class ModelProducto():
             return productos
         except Exception as ex:
             raise Exception(ex)
-    
+        
+    @classmethod
+    def get_productos_nombres(self, db):
+        try:
+            conn = db.connection
+            sql = "SELECT id, nombre FROM productos WHERE activo = 1"
+            cursor = conn.cursor()
+            cursor.execute(sql)
+            conn.commit()
+            productos = cursor.fetchall()
+            return productos
+        except Exception as ex:
+            raise Exception(ex)
     
     @classmethod
     def eliminar_producto(self, db, id):

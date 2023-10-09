@@ -28,6 +28,20 @@ class ModelCliente():
             raise Exception(ex)
     
     @classmethod
+    def get_clientes_nombres(self, db):
+        try:
+            conn = db.connection
+            sql = "SELECT id, nombre FROM cliente where activo"
+            cursor = conn.cursor()
+            cursor.execute(sql)
+            conn.commit()
+            clientes = cursor.fetchall()
+            return clientes
+        except Exception as ex:
+            raise Exception(ex)
+    
+
+    @classmethod
     def get_clientes_activos(self, db):
         try:
             conn = db.connection

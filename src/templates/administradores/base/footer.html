@@ -162,8 +162,9 @@
                   <!-- De Mapbox -->
                   <script>
                     var coordenada = document.getElementById('coordenada');
-                    var coordenadas = JSON.parse(coordenada.value);
-                    if (coordenadas){
+                    const latlong = coordenada.value;
+                    if (latlong){
+                      var coordenadas = JSON.parse(coordenada.value);
                       var longitud = coordenadas.lng;
                       var latitud = coordenadas.lat;
                     }else{

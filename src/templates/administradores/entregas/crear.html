@@ -66,17 +66,36 @@
                     {% endwith %}
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                     <p>Para añadir la coordenada, haga clic en el mapa</p>
-                    <label for="peso"> Peso </label>
-                    <input type="text" name="peso" id="peso" tabindex="1">
 
-                    <label for="coordenada" class=" mt-3"> Cordenada </label>
-                    <input type="text" name="coordenada" id="coordenada" hidden>
-                    <input type="text" name="coordenadas-mostradas" id="cordenadas-mostradas" disabled>
+                    <label for="cliente" class=" mt-3"> Cliente </label>
+                    <select id="cliente" name="cliente">
+                      {% for cliente in clientes %}
+                      <option value="{{ cliente[0] }}">{{ cliente[1] }}</option>
+                      {% endfor %}
+                    </select>
 
-                    <label for="nombre" class=" mt-3"> Nombre </label>
-                    <input type="text" name="nombre" id="nombre" tabindex="2">
+                    <label for="producto" class=" mt-3"> Producto </label>
+                    <select id="producto" name="producto">
+                      {% for producto in productos %}
+                      <option value="{{ producto[0] }}">{{ producto[1] }}</option>
+                      {% endfor %}
+                    </select>
+
+                    <label for="cantidad" class=" mt-3"> Cantidad </label>
+                    <input type="text" name="cantidad" id="cantidad" >
+
+                    <label for="fechaEntrega" class=" mt-3"> Fecha Entrega </label>
+                    <input type="date" name="fechaEntrega" id="fechaEntrega" >
+
+                    <label for="estado" class=" mt-3"> Estado </label>
+                    <select id="estado" name="estado">
+                      <option value="0">Entregado</option>
+                      <option value="1">Por entregar</option>
+                      <option value="2">Cancelado</option>
+                    </select>
 
                     <input type="submit" class="btn btn-primary mt-3"  value="Enviar">
+                    
                   </form>
                 </div>
                 <div class="d-flex flex-column" style='width: 50%;height: 600px;'>

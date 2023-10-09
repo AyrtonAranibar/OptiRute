@@ -34,7 +34,7 @@ import os
 
 #Entidades:
 from models.entities.Admin import Admin
-from models.entities.Entrega import Entrega
+from models.entities.Entregas import Entregas
 from models.entities.Sede import Sede
 from models.entities.Cliente import Cliente
 from models.entities.Producto import Producto
@@ -112,13 +112,13 @@ def guardarAdmin():
     flash("Usuario "+_nombre+" creado con exito")
     return redirect('ingresar')
 
-@app.route('/eliminar_administrador/<int:id>')
-def eliminar_administrador(id):
-    conn = mysql.connect()
-    cursor = conn.cursor()
-    cursor.execute('UPDATE `administrador` SET `activo` = "0" WHERE `administrador`.`id_administrador` =%s',(id))
-    conn.commit();
-    return redirect('/administrador')
+# @app.route('/eliminar_administrador/<int:id>')
+# def eliminar_administrador(id):
+#     conn = mysql.connect()
+#     cursor = conn.cursor()
+#     cursor.execute('UPDATE `administrador` SET `activo` = "0" WHERE `administrador`.`id_administrador` =%s',(id))
+#     conn.commit();
+#     return redirect('/administrador')
 
 
 
@@ -276,23 +276,26 @@ def entregas():
 @login_required
 def crear_entrega():
     if request.method == 'POST':
-        peso = request.form['peso']
-        coordenadas = request.form['coordenada']
-        coordenadas = json.loads(coordenadas)
-        longitud = coordenadas['lng']
-        latitud = coordenadas['lat']
-        nombre = request.form['nombre']
+        cliente = request.form['cliente']
+        producto = request.form['producto']
+        cantidad = request.form['cantidad']
+        fechaEntrega = request.form['fechaEntrega']
+        estado = request.form['estado']
 
-        entrega = Entrega(0, peso, longitud, latitud, nombre, 0, 0)
+        fechaActual = datetime.now()
+        
+        entrega = Entregas(0, cliente, producto, cantidad, fechaActual, fechaEntrega, estado)
         nueva_entrega = ModelEntrega.crear_entrega(db, entrega)
 
-        if (entregas != None):
-            flash("Entrega "+nombre+" creada con éxito")
+        if (entrega != None):
+            flash("Entrega creada con éxito")
         else:
             flash("Ha ocurrido un error!")
         return render_template('administradores/entregas/crear.html')
     else:
-        return render_template('administradores/entregas/crear.html')
+        productos = ModelProducto.get_productos_nombres(db);
+        clientes = ModelCliente.get_clientes_nombres(db);
+        return render_template('administradores/entregas/crear.html',clientes=clientes, productos=productos)
 
 
 
@@ -548,207 +551,131 @@ def guardar_vehiculo():
 
 ############################ RUTAS ######################
 
-@app.route('/rutas')
-@login_required
-def rutas():
-    sql ="SELECT * FROM `entrega` where `activo` = 1 "
-    conn = db.connection
-    cursor = conn.cursor()
-    cursor.execute(sql)
-    entregas = cursor.fetchall()
-    conn.commit()
-    coords = ((-71.5279236901535,-16.41041958501789),(-71.5070003854512,-16.4018162742952))
-    #Mapa#
-    m = folium.Map(location=[-16.41041958501,-71.5279236901],zoom_start=13, control_scale=True,tiles="cartodbpositron")
-    # folium.GeoJson(decoded).add_child(folium.Popup(distance_txt+duration_txt,max_width=300)).add_to(m)
-
-    for entrega in entregas:
-        if (entrega[0] != 0):
-            coordenada = (entrega[3],entrega[2])
-
-            folium.Marker(
-            location=list(coordenada),
-            popup= entrega[4],
-            icon=folium.Icon(color="blue"),
-            ).add_to(m)
-        
-    folium.Marker(
-        location=list(coords[0][::-1]),
-        popup="Qaliwarma",
-        icon=folium.Icon(color="green"),
-    ).add_to(m)
-
-
-    print("Entró a rutas")  
-
-    m.save('map.html')
-
-    return render_template('administradores/rutas/index.html', entregas=entregas)
-
-
-@app.route('/rutas/generar_ruta')
+@app.route('/rutas/')
 @login_required
 def generar_ruta():
-    entregas = ModelEntrega.get_entregas_activas(db)
+    return vehiculos();  
 
-    client = openrouteservice.Client(key='5b3ce3597851110001cf62488b5f9fc52aec4396a6e94f225de93894')
+# @app.route('/rutas/generar_ruta')
+# @login_required
+# def generar_ruta():
+#     entregas = ModelEntrega.get_entregas_activas(db)
+
+#     client = openrouteservice.Client(key='5b3ce3597851110001cf62488b5f9fc52aec4396a6e94f225de93894')
     
-    matriz_distancias.clear()
-    array_pedidos.clear()
+#     matriz_distancias.clear()
+#     array_pedidos.clear()
 
-    m = folium.Map(location=[-16.41041958501,-71.5279236901],zoom_start=13, control_scale=True,tiles="cartodbpositron")#crear el mapa
-
-
-    # Lista de entregas
-    coordenadas =[]
-    colorsLenght = 9
-    counter = 0
-    for entrega in entregas:
-        if(counter < 10):
-            coordenadas.append([float(entrega[2]),float(entrega[3]) ])
-            array_pedidos.append(entrega[1])
-
-            coordenada = (entrega[3],entrega[2])
-            color = getcolor(random.randint(1, colorsLenght))
-            folium.Marker(
-                location=list(coordenada),
-                popup= entrega[4],
-                icon=folium.Icon(color = 'blue'),
-            ).add_to(m)
-        counter=counter+1
-
-    almacen = (-16.41041958501,-71.5279236901)
-    folium.Marker(
-        location=list(almacen),
-        popup="Qaliwarma",
-        icon=folium.Icon(color="green"),
-    ).add_to(m)
+#     m = folium.Map(location=[-16.41041958501,-71.5279236901],zoom_start=13, control_scale=True,tiles="cartodbpositron")#crear el mapa
 
 
-    # matriz de distancias
-    # documentacion: https://openrouteservice-py.readthedocs.io/en/latest/openrouteservice.html#module-openrouteservice.distance_matrix
-    matrix = client.distance_matrix(
-    locations=coordenadas,
-    profile='driving-car',
-    metrics=['distance'],
-    validate=False,
-    )   
+#     # Lista de entregas
+#     coordenadas =[]
+#     colorsLenght = 9
+#     counter = 0
+#     for entrega in entregas:
+#         if(counter < 10):
+#             coordenadas.append([float(entrega[2]),float(entrega[3]) ])
+#             array_pedidos.append(entrega[1])
 
-    matriz_distancia = matrix['distances']
-    matriz_distancia_redondeada = numpy.round(matriz_distancia)
-    print(matriz_distancia_redondeada)
+#             coordenada = (entrega[3],entrega[2])
+#             color = getcolor(random.randint(1, colorsLenght))
+#             folium.Marker(
+#                 location=list(coordenada),
+#                 popup= entrega[4],
+#                 icon=folium.Icon(color = 'blue'),
+#             ).add_to(m)
+#         counter=counter+1
 
-    #### Algoritmos geneticos ####
-    data = dict()
-    data['distance_matrix'] = matriz_distancia_redondeada
-    data['num_vehicles'] = 1
-    data['depot'] = 0
-    data['demands'] = array_pedidos
-    data['vehicle_capacity'] = 3000  
-    data['service_times'] = np.zeros(len(data['demands']))
-
-    ap = hgs.AlgorithmParameters(timeLimit=10)  # seconds
-    hgs_solver = hgs.Solver(parameters=ap, verbose=True)
-
-    result = hgs_solver.solve_cvrp(data)
-    print("solucion:")
-    print(result.cost)
-    print(result.routes)
-
-    ########### MOSTRAR LA SOLUCION POR EL MAPA #############
-    solucion = result.routes
-
-    array_rutas = []
-    fila_ruta = []
-    for instancia in solucion:
-        fila_ruta.clear()
-        fila_ruta.append([entregas[0][2] ,entregas[0][3]])
-        for cliente in instancia:
-            fila_ruta.append([entregas[cliente][2], entregas[cliente][3]])
-        fila_ruta.append([entregas[0][2] ,entregas[0][3]])
-        array_rutas.append(fila_ruta.copy())
+#     almacen = (-16.41041958501,-71.5279236901)
+#     folium.Marker(
+#         location=list(almacen),
+#         popup="Qaliwarma",
+#         icon=folium.Icon(color="green"),
+#     ).add_to(m)
 
 
-    if array_rutas:
-        for ruta_index, ruta in enumerate(array_rutas, start=1):
-            i = 0
-            for coordenadas in ruta:
-                if (i >= 1):
-                    coords = (( float(ruta[i-1][0]), float(ruta[i-1][1])),( float(ruta[i][0]), float(ruta[i][1])))
-                    res = client.directions(coords)
-                    geometry = client.directions(coords)['routes'][0]['geometry']
-                    decoded = convert.decode_polyline(geometry)
-                    randomColor = getcolor(ruta_index)
-                    distance_txt = "<h4> <b>Distance :&nbsp" + "<strong>"+str(round(res['routes'][0]['summary']['distance']/1000,1))+" Km </strong>" +"</h4></b>"
-                    duration_txt = "<h4> <b>Duration :&nbsp" + "<strong>"+str(round(res['routes'][0]['summary']['duration']/60,1))+" Mins. </strong>" +"</h4></b>"
-                    style_function = lambda x: {
-                        'fillColor': 'black',
-                        'color': 'black',
-                        'stroke': True,
-                        'weight': 2,
-                        'fillOpacity': 0.8
-                    }
-                    folium.GeoJson(decoded, style_function = style_function).add_child(folium.Popup(distance_txt + duration_txt, max_width=300)).add_to(m)
+#     # matriz de distancias
+#     # documentacion: https://openrouteservice-py.readthedocs.io/en/latest/openrouteservice.html#module-openrouteservice.distance_matrix
+#     matrix = client.distance_matrix(
+#     locations=coordenadas,
+#     profile='driving-car',
+#     metrics=['distance'],
+#     validate=False,
+#     )   
+
+#     matriz_distancia = matrix['distances']
+#     matriz_distancia_redondeada = numpy.round(matriz_distancia)
+#     print(matriz_distancia_redondeada)
+
+#     #### Algoritmos geneticos ####
+#     data = dict()
+#     data['distance_matrix'] = matriz_distancia_redondeada
+#     data['num_vehicles'] = 1
+#     data['depot'] = 0
+#     data['demands'] = array_pedidos
+#     data['vehicle_capacity'] = 3000  
+#     data['service_times'] = np.zeros(len(data['demands']))
+
+#     ap = hgs.AlgorithmParameters(timeLimit=10)  # seconds
+#     hgs_solver = hgs.Solver(parameters=ap, verbose=True)
+
+#     result = hgs_solver.solve_cvrp(data)
+#     print("solucion:")
+#     print(result.cost)
+#     print(result.routes)
+
+#     ########### MOSTRAR LA SOLUCION POR EL MAPA #############
+#     solucion = result.routes
+
+#     array_rutas = []
+#     fila_ruta = []
+#     for instancia in solucion:
+#         fila_ruta.clear()
+#         fila_ruta.append([entregas[0][2] ,entregas[0][3]])
+#         for cliente in instancia:
+#             fila_ruta.append([entregas[cliente][2], entregas[cliente][3]])
+#         fila_ruta.append([entregas[0][2] ,entregas[0][3]])
+#         array_rutas.append(fila_ruta.copy())
+
+
+#     if array_rutas:
+#         for ruta_index, ruta in enumerate(array_rutas, start=1):
+#             i = 0
+#             for coordenadas in ruta:
+#                 if (i >= 1):
+#                     coords = (( float(ruta[i-1][0]), float(ruta[i-1][1])),( float(ruta[i][0]), float(ruta[i][1])))
+#                     res = client.directions(coords)
+#                     geometry = client.directions(coords)['routes'][0]['geometry']
+#                     decoded = convert.decode_polyline(geometry)
+#                     randomColor = getcolor(ruta_index)
+#                     distance_txt = "<h4> <b>Distance :&nbsp" + "<strong>"+str(round(res['routes'][0]['summary']['distance']/1000,1))+" Km </strong>" +"</h4></b>"
+#                     duration_txt = "<h4> <b>Duration :&nbsp" + "<strong>"+str(round(res['routes'][0]['summary']['duration']/60,1))+" Mins. </strong>" +"</h4></b>"
+#                     style_function = lambda x: {
+#                         'fillColor': 'black',
+#                         'color': 'black',
+#                         'stroke': True,
+#                         'weight': 2,
+#                         'fillOpacity': 0.8
+#                     }
+#                     folium.GeoJson(decoded, style_function = style_function).add_child(folium.Popup(distance_txt + duration_txt, max_width=300)).add_to(m)
                     
-                i = i + 1
+#                 i = i + 1
         
 
-    m.save('map.html')
+#     m.save('map.html')
 
 
-    return render_template('administradores/rutas/index.html', entregas=entregas)
+#     return render_template('administradores/rutas/index.html', entregas=entregas)
 
-def get_color(color_index):
-    colores = [
-    {'fillColor': '#d4271e', 'color': '#d4271e'},
-    {'fillColor': '#d47c1e', 'color': '#d47c1e'},
-    {'fillColor': '#d4cb1e', 'color': '#d4cb1e'},
-    {'fillColor': '#97d41e', 'color': '#97d41e'},
-    {'fillColor': '#64d41e', 'color': '#64d41e'},
-    {'fillColor': '#30d41e', 'color': '#30d41e'},
-    {'fillColor': '#1ed442', 'color': '#1ed442'},
-    {'fillColor': '#1ed47f', 'color': '#1ed47f'},
-    {'fillColor': '#1ed4c2', 'color': '#1ed4c2'},
-    {'fillColor': '#1e91d4', 'color': '#1e91d4'},
-    {'fillColor': '#1e61d4', 'color': '#1e61d4'},
-    {'fillColor': '#1e24d4', 'color': '#1e24d4'},
-    {'fillColor': '#451ed4', 'color': '#451ed4'},
-    {'fillColor': '#7c1ed4', 'color': '#7c1ed4'},
-    {'fillColor': '#a71ed4', 'color': '#a71ed4'},
-    {'fillColor': '#d41e5b', 'color': '#d41e5b'},
-    ]
-    return colores[color_index % len(colores)]
 
-@app.route('/rutas/mapa')
-@login_required
-def mapa():
-    return render_template('map.html')
+
+
 
 ############################ FUNCIONES ######################
 
 
 
-def getcolor(index):
-    if index == 1:
-        return 'red'
-    if index == 2:
-        return 'orange'
-    if index == 3:
-        return 'blue'
-    if index == 4:
-        return 'gold'
-    if index == 5:
-        return 'purple'
-    if index == 6:
-        return 'yellow'
-    if index == 7:
-        return 'greenyellow'
-    if index == 8:
-        return 'lime'
-    if index == 9:
-        return 'black'
-    else:
-        return 'gray'
 
 ############################ PROTOCOLOS ######################
 
