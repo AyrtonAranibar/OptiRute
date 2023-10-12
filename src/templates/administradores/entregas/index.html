@@ -102,11 +102,21 @@
                         <p class="text-xs font-weight-bold mb-0">{{ entrega[5] }} </p>
                       </td>
                       <td class="align-middle text-center">
-                        <p class="text-xs font-weight-bold mb-0">{{ entrega[6] }} </p>
+                        <p class="text-xs font-weight-bold mb-0">
+                        {% if entrega[6] == 0 %}
+                        <span class="badge text-bg-success">Entregado</span>
+                        {% elif entrega[6] == 1 %}
+                        <span class="badge text-bg-primary">Por entregar</span>
+                        {% elif entrega[6] == 2 %}
+                        <span class="badge text-bg-danger">Cancelado</span>
+                        {% else %}
+                          <span class="badge text-bg-danger">Error, valor invalido</span>
+                        {% endif %}
+                      </p>
                       </td>
                       <td class="align-middle">
-                        <a href="">editar</a>
-                        <a href="/entregas/eliminar_entrega/{{ entrega[0] }}">Borrar</a>
+                        <a href="/entregas/editar_entrega/{{ entrega[0] }}" class="btn btn-info">editar</a> &nbsp;
+                        <a href="/entregas/eliminar_entrega/{{ entrega[0] }}" class="btn btn-danger">Borrar</a>
                       </td>
                     </tr>
                     {% endfor %}

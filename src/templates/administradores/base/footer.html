@@ -161,6 +161,8 @@
 
                   <!-- De Mapbox -->
                   <script>
+                  const mapContent = document.getElementById('map');
+                  if(mapContent){
                     var coordenada = document.getElementById('coordenada');
                     const latlong = coordenada.value;
                     if (latlong){
@@ -224,7 +226,7 @@
                       coordenada.value = JSON.stringify(lngLat); // Agrega "JSON.stringify" para obtener el formato correcto de las coordenadas
                     }
                   
-                    marker.on('dragend', onDragEnd);
+                    marker.on('dragend', onDragEnd);}
                   </script>
                   
                   <!-- Github buttons -->

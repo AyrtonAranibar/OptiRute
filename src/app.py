@@ -304,8 +304,36 @@ def crear_entrega():
 def eliminar_entrega(id):
     entrega_eliminada = ModelEntrega.eliminar_entrega(db, id)
     flash("Entrega eliminada con éxito")
-    entregas = ModelEntrega.get_entregas_activas(db)
-    return render_template('administradores/entregas/index.html', entregas=entregas)
+    return entregas();
+
+
+@app.route('/entregas/editar_entrega/<int:id>', methods=['GET', 'POST'])
+@login_required
+def editar_entrega(id):
+    if request.method == 'POST':
+        entrega_id = request.form['entrega_id']
+        cliente_id = request.form['cliente']
+        producto_id = request.form['producto']
+        cantidad = request.form['cantidad']
+        fechaEntrega = request.form['fechaEntrega']
+        estado = request.form['estado']
+
+        fechaActual = datetime.now()
+        
+        entrega = Entregas(entrega_id, cliente_id, producto_id, cantidad, fechaActual, fechaEntrega, estado)
+        nueva_entrega = ModelEntrega.editar_entrega(db, entrega)
+
+        if (entrega != None):
+            flash("Entrega editada con éxito")
+        else:
+            flash("Ha ocurrido un error!")
+        return entregas()
+    else:
+        productos = ModelProducto.get_productos_nombres(db);
+        clientes = ModelCliente.get_clientes_nombres(db);
+        entrega = ModelEntrega.get_entrega_id(db, id);
+        return render_template('administradores/entregas/editar.html', entrega=entrega, clientes=clientes, productos=productos)
+
 
 
 ################ PRODUCTOS ################

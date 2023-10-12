@@ -6,7 +6,7 @@
         <li class="breadcrumb-item text-sm"><a class="opacity-5 text-dark" href="javascript:;">Página</a></li>
         <li class="breadcrumb-item text-sm text-dark active" aria-current="page">Administración</li>
       </ol>
-      <h6 class="font-weight-bolder mb-0">Entregas</h6>
+      <h6 class="font-weight-bolder mb-0">entregas</h6>
     </nav>
     <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4" id="navbar">
       <div class="ms-md-auto pe-md-3 d-flex align-items-center">
@@ -40,17 +40,15 @@
               <div class="bg-gradient-primary shadow-pri
               
               mary border-radius-lg pt-4 pb-3 d-flex justify-content-between">
-                <h6 class="text-white text-capitalize ps-3 w-25 ">Agregar una entrega</h6>
+                <h6 class="text-white text-capitalize ps-3 w-25 ">Agregar un entrega</h6>
                 <!-- <a  class="btn btn-light me-3"><i class="bi bi-plus-lg fa-lg"></i> Agregar</a> -->
               </div>
             </div>
             <div class="card-body px-0 pb-2">
               <div class="table-responsive p-0 d-flex justify-content-center">
 
-                <div style='width: 50%;height: 600px;'>
-                  
-                  <form action="/entregas/crear_entrega" method="post" class="d-flex flex-column"  style='width: 60%; margin-left:auto; margin-right:auto'>
-                    {% with messages = get_flashed_messages() %}
+                <div style='width: 800px;height: 600px;'>
+                  {% with messages = get_flashed_messages() %}
 
                     {% if messages %}
                     <br>
@@ -64,45 +62,51 @@
                     {% endif%}
 
                     {% endwith %}
+
+                  <form action="/entregas/editar_entrega/{{entrega[0]}}" method="POST" enctype="multipart/form-data" class="d-flex flex-column"  style='width: 60%; margin-left:auto; margin-right:auto'  >
+
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                     <p>Para añadir la coordenada, haga clic en el mapa</p>
+
+                    <input type="hidden" name="entrega_id" value="{{ entrega[0] }}">
+
 
                     <label for="cliente" class=" mt-3"> Cliente </label>
                     <select class="form-select" id="cliente" name="cliente">
                       {% for cliente in clientes %}
-                      <option value="{{ cliente[0] }}">{{ cliente[1] }}</option>
-                      {% endfor %}
+                      <option value="{{ cliente[0] }}"
+                              {% if cliente[0] == entrega[1] %} selected {% endif %}>
+                        {{ cliente[1] }}
+                      </option>
+                    {% endfor %}
                     </select>
 
                     <label for="producto" class=" mt-3"> Producto </label>
                     <select class="form-select" id="producto" name="producto">
                       {% for producto in productos %}
-                      <option value="{{ producto[0] }}">{{ producto[1] }}</option>
+                      <option value="{{ producto[0] }}"
+                        {% if producto[0] == entrega[2] %} selected {% endif %}>
+                      {{ producto[1] }}</option>
                       {% endfor %}
                     </select>
 
                     <label for="cantidad" class=" mt-3"> Cantidad </label>
-                    <input type="text" name="cantidad" id="cantidad" value>
+                    <input type="text" name="cantidad" id="cantidad" value="{{ entrega[3] }}">
+
+                    <input type="hidden" value="{{ entrega[5] }}" id="fecha">
 
                     <label for="fechaEntrega" class=" mt-3"> Fecha Entrega </label>
-                    <input type="datetime-local" name="fechaEntrega" id="fechaEntrega" >
+                    <input type="datetime-local" name="fechaEntrega" id="fechaEntrega"  min="2023-01-01T00:00" max="2090-06-14T00:00">
 
                     <label for="estado" class=" mt-3"> Estado </label>
                     <select class="form-select" id="estado" name="estado">
-                      <option value="0">Entregado</option>
-                      <option value="1">Por entregar</option>
-                      <option value="2">Cancelado</option>
+                      <option value="0" {% if 0 == entrega[6] %} selected {% endif %}>Entregado</option>
+                      <option value="1" {% if 1 == entrega[6] %} selected {% endif %}>Por entregar</option>
+                      <option value="2" {% if 2 == entrega[6] %} selected {% endif %}>Cancelado</option>
                     </select>
 
                     <input type="submit" class="btn btn-primary mt-3"  value="Enviar">
-                    
                   </form>
-                </div>
-                <div class="d-flex flex-column px-1" style='width: 50%;height: 600px;'>
-                  <div id='map' style='width: 100%;height: 600px;'>
-                  
-                  </div>
-                  <span style="color:black"> <pre id='coordenadas'></pre> </span>
                 </div>
                 
               </div>
@@ -110,5 +114,32 @@
           </div>
         </div>
       </div>
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+      const fechaRecibida = document.getElementById("fecha");
+      const fechaEntrega  = document.getElementById("fechaEntrega");
+      const fechaHora = fechaRecibida.value;
 
+      const newDate = new Date(fechaHora);
+      var dia = newDate.getDate();
+      if( dia.toString().length ==  1 ){
+        dia = '0' + dia;
+      }
+      var mes = newDate.getMonth() + 1; 
+      if( mes.toString().length ==  1 ){
+        mes = '0' + mes;
+      }
+      const año = newDate.getFullYear();
+      var hora = newDate.getHours(); 
+      if( hora.toString().length ==  1 ){
+        hora = '0' + hora;
+      }
+      var minuto = newDate.getMinutes(); 
+      if( minuto.toString().length ==  1 ){
+        minuto = '0' +  minuto;
+      }
+      const fecha = `${año}-${mes}-${dia}T${hora}:${minuto}`;
+      fechaEntrega.value  = fecha;
+  });
+</script>
       {% include 'administradores/base/footer.html' %}

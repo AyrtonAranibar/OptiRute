@@ -61,10 +61,22 @@ class ModelEntrega():
             return entregas
         except Exception as ex:
             raise Exception(ex)
-    
+
+    @classmethod
+    def get_entrega_id(self, db, id):
+        try:
+            conn = db.connection
+            sql = "SELECT * FROM entregas WHERE `entregas`.`id` = '{}'".format(id)
+            cursor = conn.cursor()
+            cursor.execute(sql)
+            conn.commit()
+            entrega = cursor.fetchone()
+            return entrega
+        except Exception as ex:
+            raise Exception(ex)
     
     @classmethod
-    def eliminar_entregas(self, db, id):
+    def eliminar_entrega(self, db, id):
         try:
             conn = db.connection
             sql = "UPDATE `entregas` SET `activo` = '0' WHERE `entregas`.`id` = '{}'".format(id)
@@ -73,5 +85,20 @@ class ModelEntrega():
             conn.commit()
             entregas = cursor.fetchone()
             return entregas
+        except Exception as ex:
+            raise Exception(ex)
+
+
+    @classmethod
+    def editar_entrega(self, db, entrega):
+        try:
+            conn = db.connection
+            sql = """UPDATE `entregas` SET `cliente_id` = '{}',`producto_id` = '{}',`cantidad` = '{}',`fecha_entrega` = '{}',
+            `estado` = '{}'WHERE `entregas`.`id` = '{}'""".format( entrega.cliente_id, entrega.producto_id, entrega.cantidad, entrega.fecha_entrega, entrega.estado, entrega.id)
+            cursor = conn.cursor()
+            cursor.execute(sql)
+            conn.commit()
+            cliente = cursor.fetchone()
+            return cliente
         except Exception as ex:
             raise Exception(ex)
