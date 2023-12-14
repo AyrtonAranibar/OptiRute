@@ -1,0 +1,15 @@
+Flask==2.3.2
+Flask-MySQLdb==1.0.1
+Flask-WTF==1.1.1
+Flask-Login==0.6.2
+Werkzeug==2.3.6
+Requests==2.31.0
+Numpy==1.26.2
+Openrouteservice=2.3.3
+Folium==0.15.1
+hygese==0.0.0.8
+
+# Dependencias del sistema (requieren instalación manual)
+# - gcc
+# - make
+# - cmake
