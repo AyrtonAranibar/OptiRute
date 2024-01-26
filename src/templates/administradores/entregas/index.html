@@ -104,11 +104,11 @@
                       <td class="align-middle text-center">
                         <p class="text-xs font-weight-bold mb-0">
                         {% if entrega[6] == 0 %}
-                        <span class="badge text-bg-success">Entregado</span>
+                        <span class="badge text-bg-success text-light">Entregado</span>
                         {% elif entrega[6] == 1 %}
-                        <span class="badge text-bg-primary">Por entregar</span>
+                        <span class="badge text-bg-primary text-light">Por entregar</span>
                         {% elif entrega[6] == 2 %}
-                        <span class="badge text-bg-danger">Cancelado</span>
+                        <span class="badge text-bg-danger text-light">Cancelado</span>
                         {% else %}
                           <span class="badge text-bg-danger">Error, valor invalido</span>
                         {% endif %}
