@@ -59,8 +59,9 @@ python app.py
 
 # Agradecimientos
 
-Agradezo a Creative Tim por permitirme usar sus plantillas frontend para el desarrollo de este proyecto.
-- **[Recursos Externos](https://www.creative-tim.com/product/material-dashboard):** Utilizamos y agradecemos a Creative Tim por proporcionar la plantilla visual de este proyecto.
+Agradezco a Creative Tim por permitirme usar sus plantillas frontend para el desarrollo de este proyecto.
+
+- **[Recursos Externos](https://www.creative-tim.com/product/material-dashboard):**
 
 # Licencia
 
