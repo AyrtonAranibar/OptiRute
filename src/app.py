@@ -64,13 +64,6 @@ app.config['CARPETA'] = CARPETA
 def uploads(nombreFoto):
     return send_from_directory(app.config['CARPETA'], nombreFoto)
 
-########## CODIGO ANTIGUO ############
-# mysql = MySQL()
-# app.config['MYSQL_DATABASE_HOST']='localhost'
-# app.config['MYSQL_DATABASE_USER']='root'
-# app.config['MYSQL_DATABASE_PASSWORD']=''
-# app.config['MYSQL_DATABASE_DB']='optirute_db'
-# mysql.init_app(app)
 
 @app.route('/')
 def index():
@@ -111,15 +104,6 @@ def guardarAdmin():
     ModelAdmin.crear_usuario(db, admin)
     flash("Usuario "+_nombre+" creado con exito")
     return redirect('ingresar')
-
-# @app.route('/eliminar_administrador/<int:id>')
-# def eliminar_administrador(id):
-#     conn = mysql.connect()
-#     cursor = conn.cursor()
-#     cursor.execute('UPDATE `administrador` SET `activo` = "0" WHERE `administrador`.`id_administrador` =%s',(id))
-#     conn.commit();
-#     return redirect('/administrador')
-
 
 
 ###################################################################
